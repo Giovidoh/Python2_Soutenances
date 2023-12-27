@@ -75,8 +75,12 @@ WSGI_APPLICATION = 'GestionSoutenances.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'ENGINE': 'django.db.backends.mysql',
+        'NAME': 'gestion_soutenances',
+        'USER': 'root',
+        'PASSWORD': '',
+        'HOST': 'localhost',  # Ou l'adresse IP de votre serveur MySQL
+        'PORT': '3306',       # Port par défaut pour MySQL
     }
 }
 
