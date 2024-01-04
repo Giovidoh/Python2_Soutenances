@@ -37,6 +37,12 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'defense',
+    'field_of_study',
+    'professors',
+    'rooms',
+    'school_year',
+    'student',
 ]
 
 MIDDLEWARE = [
@@ -79,7 +85,7 @@ DATABASES = {
         'NAME': 'gestion_soutenances',
         'USER': 'root',
         'PASSWORD': '',
-        'HOST': 'localhost',  # Ou l'adresse IP de votre serveur MySQL
+        'HOST': '127.0.0.1',  # Ou l'adresse IP de votre serveur MySQL
         'PORT': '3306',       # Port par défaut pour MySQL
     }
 }

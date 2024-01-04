@@ -1,6 +1,6 @@
 from django.contrib import admin
-from .models import FieldOfStudy
+from .models import Student
 
 # Register your models here.
 
-admin.register(FieldOfStudy)
+admin.register(Student)
