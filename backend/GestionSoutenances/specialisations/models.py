@@ -6,6 +6,7 @@ from django.db import models
 class Specialisations(models.Model):
     name = models.CharField(max_length = 255)
     field = models.ForeignKey("field_of_study.FieldOfStudy", on_delete=models.CASCADE)
+    specialiser = models.ManyToManyField("professors.Professors")
     
     
     def __str__(self):
