@@ -42,6 +42,7 @@ INSTALLED_APPS = [
     'professors',
     'rooms',
     'school_year',
+    'specialisations',
     'student',
 ]
 
