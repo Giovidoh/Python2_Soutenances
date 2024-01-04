@@ -2,7 +2,7 @@ from django.db import models
 
 # Create your models here.
 
-class professors(models.Model):
+class Professors(models.Model):
     name = models.CharField(max_length = 30)
     prenom = models.CharField(max_length = 255)
     contact = models.CharField(max_length = 8)
