@@ -8,6 +8,7 @@ class Defense(models.Model):
     result = models.IntegerField(default = None, max_length = 2)
     room = models.ForeignKey('rooms.Rooms', on_delete = models.CASCADE)
     student = models.ForeignKey('student.Student', on_delete = models.CASCADE)
+    professors = models.ManyToManyField('professors.Professors')
     
     def __str__(self):
         return(self.theme)
