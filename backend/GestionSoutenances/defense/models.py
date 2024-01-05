@@ -8,8 +8,16 @@ class Defense(models.Model):
     result = models.IntegerField(default = None)
     room = models.ForeignKey('rooms.Rooms', on_delete = models.CASCADE)
     student = models.ForeignKey('student.Student', on_delete = models.CASCADE)
-    professors = models.ManyToManyField('professors.Professors')
+    professors = models.ManyToManyField('professors.Professors', through='DefenseProfessor')
     
     def __str__(self):
         return(self.theme)
     
+# Relation entre Soutenances et professeurs
+class DefenseProfessor(models.Model):
+    defense = models.ForeignKey(Defense, on_delete = models.CASCADE)
+    professor = models.ForeignKey('professors.Professors', on_delete = models.CASCADE)
+    mark = models.IntegerField(default=None)
+    
+    def __str__(self):
+        return f"{self.defense} - {self.professor}"
