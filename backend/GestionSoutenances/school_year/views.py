@@ -13,6 +13,7 @@ from .serializers import SchoolYearSerializer
 
 # Create your views here.
 
+# Liste des années d'étude
 @api_view(['GET'])
 def list(request):
     queryset = SchoolYear.objects.all()
