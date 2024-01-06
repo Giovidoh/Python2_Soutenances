@@ -13,6 +13,7 @@ from .serializers import RoomsSerializer
 
 # Create your views here.
 
+#Liste des salles de soutenances
 @api_view(['GET'])
 def list(request):
     queryset = Rooms.objects.all()
