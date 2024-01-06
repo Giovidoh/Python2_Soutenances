@@ -33,4 +33,16 @@ def add(request):
     serializer = FieldOfStudySerializer(data=request.data)
     if(serializer.is_valid(raise_exception=True)):
         serializer.save()
-        return Response({'message' : 'Filière ajoutée avec succès !', 'field_of_study' : serializer.data}, status=status.HTTP_201_CREATED)
+        return Response({'message': 'Filière ajoutée avec succès !', 'field_of_study': serializer.data}, status=status.HTTP_201_CREATED)
+    
+# Modification de filière
+@api_view(['PUT'])
+def update(request, id):
+    field_of_study = FieldOfStudy.objects.filter(id=id).first()
+    if not field_of_study:
+        return Response({'error': 'Cette filière n\'existe pas.'}, status=status.HTTP_404_NOT_FOUND)
+    
+    serializer = FieldOfStudySerializer(field_of_study, data=request.data)
+    if(serializer.is_valid(raise_exception=True)):
+        serializer.save()
+        return Response({'message': 'Filière modifiée avec succès !', 'field_of_study': serializer.data}, status=status.HTTP_200_OK)
