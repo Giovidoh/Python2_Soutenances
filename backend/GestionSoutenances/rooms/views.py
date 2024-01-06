@@ -24,4 +24,12 @@ def list(request):
             serialized_data = RoomsSerializer(object).data
             result.append(serialized_data)
     
-    return JsonResponse(result, safe = False)
+    return Response(result)
+
+# Ajout de salles
+@api_view(['POST'])
+def add(request):
+    serializer = RoomsSerializer(data=request.data)
+    if(serializer.is_valid(raise_exception=True)):
+        serializer.save()
+        return Response({'message': 'Salle ajoutée avec succès !', 'Salle': serializer.data})
