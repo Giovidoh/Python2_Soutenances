@@ -41,6 +41,7 @@ INSTALLED_APPS = [
     'field_of_study',
     'professors',
     'rooms',
+    'rest_framework',
     'school_year',
     'specialisations',
     'student',

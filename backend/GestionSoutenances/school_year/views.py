@@ -24,4 +24,4 @@ def list(request):
             serialized_data = SchoolYearSerializer(object).data
             result.append(serialized_data)
     
-    return JsonResponse(result, safe = False)
+    return Response(result)
