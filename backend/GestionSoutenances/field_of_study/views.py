@@ -32,8 +32,13 @@ def list(request):
 def add(request):
     serializer = FieldOfStudySerializer(data=request.data)
     if(serializer.is_valid(raise_exception=True)):
-        serializer.save()
-        return Response({'message': 'Filière ajoutée avec succès !', 'field_of_study': serializer.data}, status=status.HTTP_201_CREATED)
+        # Vérifier si la filière existe déjà
+        existing_field = FieldOfStudy.objects.filter(name=request.data.get('name')).first()
+        if not existing_field:
+            serializer.save()
+            return Response({'message': 'Filière ajoutée avec succès !', 'field_of_study': serializer.data}, status=status.HTTP_201_CREATED)
+        else:
+            return Response({'error': 'Cette filière existe déjà ! Veuillez en créer une autre.'})
     
 # Modification de filière
 @api_view(['PUT'])
@@ -44,5 +49,10 @@ def update(request, id):
     
     serializer = FieldOfStudySerializer(field_of_study, data=request.data)
     if(serializer.is_valid(raise_exception=True)):
-        serializer.save()
-        return Response({'message': 'Filière modifiée avec succès !', 'field_of_study': serializer.data}, status=status.HTTP_200_OK)
+        # Vérifier si la filière existe déjà
+        existing_field = FieldOfStudy.objects.filter(name=request.data.get('name')).exclude(id=field_of_study.id).first()
+        if not existing_field:
+            serializer.save()
+            return Response({'message': 'Filière modifiée avec succès !', 'field_of_study': serializer.data}, status=status.HTTP_200_OK)
+        else:
+            return Response({'error': 'Cette filière existe déjà ! Veuillez en créer une autre.'})
