@@ -4,6 +4,7 @@ from .models import Rooms
 from django.http import JsonResponse
 
 # Importations de rest_framework
+from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.decorators import api_view
 
@@ -26,10 +27,15 @@ def list(request):
     
     return Response(result)
 
-# Ajout de salles
+# Ajout de salle
 @api_view(['POST'])
 def add(request):
     serializer = RoomsSerializer(data=request.data)
     if(serializer.is_valid(raise_exception=True)):
-        serializer.save()
-        return Response({'message': 'Salle ajoutée avec succès !', 'Salle': serializer.data})
+        # Vérifier si la salle existe déjà
+        existing_field = Rooms.objects.filter(name=request.data.get('name')).first()
+        if not existing_field:
+            serializer.save()
+            return Response({'message': 'Salle ajoutée avec succès !', 'Rooms': serializer.data}, status=status.HTTP_201_CREATED)
+        else:
+            return Response({'error': 'Cette salle existe déjà ! Veuillez en créer une autre.'})
