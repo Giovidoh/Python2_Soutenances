@@ -33,8 +33,8 @@ def add(request):
     serializer = FieldOfStudySerializer(data=request.data)
     if(serializer.is_valid(raise_exception=True)):
         # Vérifier si la filière existe déjà
-        existing_field = FieldOfStudy.objects.filter(name=request.data.get('name')).first()
-        if not existing_field:
+        existing_field = FieldOfStudy.objects.filter(name=request.data.get('name'), is_deleted=False).first()
+        if (not existing_field or existing_field.is_deleted == True):
             serializer.save()
             return Response({'message': 'Filière ajoutée avec succès !', 'field_of_study': serializer.data}, status=status.HTTP_201_CREATED)
         else:
@@ -44,7 +44,7 @@ def add(request):
 @api_view(['PUT'])
 def update(request, id):
     field_of_study = FieldOfStudy.objects.filter(id=id).first()
-    if not field_of_study:
+    if (not field_of_study or field_of_study.is_deleted == True):
         return Response({'error': 'Cette filière n\'existe pas.'}, status=status.HTTP_404_NOT_FOUND)
     
     serializer = FieldOfStudySerializer(field_of_study, data=request.data)
@@ -56,3 +56,15 @@ def update(request, id):
             return Response({'message': 'Filière modifiée avec succès !', 'field_of_study': serializer.data}, status=status.HTTP_200_OK)
         else:
             return Response({'error': 'Cette filière existe déjà ! Veuillez en créer une autre.'})
+        
+# Suppression de filière
+@api_view(['DELETE'])
+def delete(request, id):
+    field_of_study = FieldOfStudy.objects.filter(id=id).first()
+    if (not field_of_study or field_of_study.is_deleted == True):
+        return Response({'error': 'Cette filière n\'existe pas.'}, status=status.HTTP_404_NOT_FOUND)
+    
+    # Si la filière existe faire une suppression logique
+    field_of_study.soft_delete()
+    
+    return Response({'message': 'Filière supprimée avec succès'}, status=status.HTTP_200_OK)
