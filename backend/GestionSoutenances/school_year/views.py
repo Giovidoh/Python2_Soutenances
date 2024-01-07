@@ -17,7 +17,7 @@ from .serializers import SchoolYearSerializer
 # Liste des années d'étude
 @api_view(['GET'])
 def list(request):
-    queryset = SchoolYear.objects.all()
+    queryset = SchoolYear.objects.filter(is_deleted = False)
     result = []
     
     if queryset:
