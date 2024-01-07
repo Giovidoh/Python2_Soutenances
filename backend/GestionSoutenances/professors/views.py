@@ -14,6 +14,8 @@ from .serializers import ProfessorsSerializer
 
 # Create your views here.
 
+#### CRUD ####
+
 #Liste des professeurs
 @api_view(['GET'])
 def list(request):
@@ -68,3 +70,11 @@ def delete(request, id):
     professors.soft_delete()
     
     return Response({'message': 'Professeur supprimé avec succès'}, status=status.HTTP_200_OK)
+
+#### END OF CRUD ####
+
+#### OTHER VIEWS ####
+
+
+
+#### END OF OTHER VIEWS ####

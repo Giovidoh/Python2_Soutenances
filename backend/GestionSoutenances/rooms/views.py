@@ -14,10 +14,12 @@ from .serializers import RoomsSerializer
 
 # Create your views here.
 
+#### CRUD ####
+
 #Liste des salles de soutenances
 @api_view(['GET'])
 def list(request):
-    queryset = Rooms.objects.all()
+    queryset = Rooms.objects.filter(is_deleted = False)
     result = []
     
     if queryset:
@@ -68,3 +70,11 @@ def delete(request, id):
     rooms.soft_delete()
     
     return Response({'message': 'Salle supprimée avec succès'}, status=status.HTTP_200_OK)
+
+#### END OF CRUD ####
+
+#### OTHER VIEWS ####
+
+
+
+#### END OF OTHER VIEWS ####
