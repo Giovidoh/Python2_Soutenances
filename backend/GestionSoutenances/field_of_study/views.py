@@ -17,7 +17,7 @@ from .serializers import FieldOfStudySerializer
 # Liste des filières
 @api_view(['GET'])
 def list(request):
-    queryset = FieldOfStudy.objects.all()
+    queryset = FieldOfStudy.objects.filter(is_deleted = False)
     result = []
     
     if queryset:
