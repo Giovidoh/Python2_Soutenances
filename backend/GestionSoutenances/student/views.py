@@ -33,9 +33,26 @@ def add(request):
     serializer = StudentSerializer(data=request.data)
     if(serializer.is_valid(raise_exception=True)):
         # Vérifier si l'étudiant existe déjà (même nom, prénom, date de naissance)
-        existing_field = Student.objects.filter(familyName=request.data.get('familyName'), firstName=request.data.get('firstName'), birth_date=request.data.get('birth_date'), is_deleted=False).first()
-        if (not existing_field or existing_field.is_deleted == True):
+        existing_student = Student.objects.filter(familyName=request.data.get('familyName'), firstName=request.data.get('firstName'), birth_date=request.data.get('birth_date'), is_deleted=False).first()
+        if (not existing_student or existing_student.is_deleted == True):
             serializer.save()
             return Response({'message': 'Étudiant ajouté avec succès !', 'student': serializer.data}, status=status.HTTP_201_CREATED)
+        else:
+            return Response({'error': 'Un étudiant ayant le même nom, prénom et date de naissance existe déjà ! Veuillez en ajouter un autre.'})
+
+# Modification d'étudiant
+@api_view(['PUT'])
+def update(request, id):
+    student = Student.objects.filter(id=id).first()
+    if (not student or student.is_deleted == True):
+        return Response({'error': 'Cet étudiant n\'existe pas.'}, status=status.HTTP_404_NOT_FOUND)
+    
+    serializer = StudentSerializer(student, data=request.data)
+    if(serializer.is_valid(raise_exception=True)):
+        # Vérifier si l'étudiant existe déjà (même nom, prénom, date de naissance)
+        existing_student = Student.objects.filter(familyName=request.data.get('familyName'), firstName=request.data.get('firstName'), birth_date=request.data.get('birth_date'), is_deleted=False).exclude(id=student.id).first()
+        if not existing_student:
+            serializer.save()
+            return Response({'message': 'Étudiant modifié avec succès !', 'student': serializer.data}, status=status.HTTP_200_OK)
         else:
             return Response({'error': 'Un étudiant ayant le même nom, prénom et date de naissance existe déjà ! Veuillez en ajouter un autre.'})
