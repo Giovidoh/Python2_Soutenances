@@ -11,8 +11,14 @@ from rest_framework.decorators import api_view
 # Importation du serializer
 from .serializers import StudentSerializer
 
+# Importation des fonctions personnalisées
+from .functions import generate_serial_number
+
+
 
 # Create your views here.
+
+#### CRUD ####
 
 # Liste des étudiants
 @api_view(['GET'])
@@ -30,6 +36,10 @@ def list(request):
 # Ajout d'étudiant
 @api_view(['POST'])
 def add(request):
+    # Définir le numéro matricule de l'étudiant
+    serial_number = generate_serial_number()
+    request.data['serialNumber'] = serial_number
+    
     serializer = StudentSerializer(data=request.data)
     if(serializer.is_valid(raise_exception=True)):
         # Vérifier si l'étudiant existe déjà (même nom, prénom, date de naissance)
@@ -68,3 +78,11 @@ def delete(request, id):
     student.soft_delete()
     
     return Response({'message': 'Étudiant supprimé avec succès'}, status=status.HTTP_200_OK)
+
+#### END OF CRUD ####
+
+#### OTHER VIEWS ####
+
+
+
+#### END OF OTHER VIEWS ####
