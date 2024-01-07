@@ -39,3 +39,20 @@ def add(request):
             return Response({'message': 'Salle ajoutée avec succès !', 'Rooms': serializer.data}, status=status.HTTP_201_CREATED)
         else:
             return Response({'error': 'Cette salle existe déjà ! Veuillez en créer une autre.'})
+
+# Modification de salle
+@api_view(['PUT'])
+def update(request, id):
+    rooms = Rooms.objects.filter(id=id).first()
+    if not rooms:
+        return Response({'error': 'Cette salle n\'existe pas.'}, status=status.HTTP_404_NOT_FOUND)
+    
+    serializer = RoomsSerializer(rooms, data=request.data)
+    if(serializer.is_valid(raise_exception=True)):
+        # Vérifier si la salle existe déjà
+        existing_field = Rooms.objects.filter(name=request.data.get('name')).exclude(id=rooms.id).first()
+        if not existing_field:
+            serializer.save()
+            return Response({'message': 'Salle modifiée avec succès !', 'rooms': serializer.data}, status=status.HTTP_200_OK)
+        else:
+            return Response({'error': 'Cette salle existe déjà ! Veuillez en créer une autre.'})
