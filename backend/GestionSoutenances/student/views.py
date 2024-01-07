@@ -56,3 +56,15 @@ def update(request, id):
             return Response({'message': 'Étudiant modifié avec succès !', 'student': serializer.data}, status=status.HTTP_200_OK)
         else:
             return Response({'error': 'Un étudiant ayant le même nom, prénom et date de naissance existe déjà ! Veuillez en ajouter un autre.'})
+        
+# Suppression d'étudiant
+@api_view(['DELETE'])
+def delete(request, id):
+    student = Student.objects.filter(id=id).first()
+    if (not student or student.is_deleted == True):
+        return Response({'error': 'Cet étudiant n\'existe pas.'}, status=status.HTTP_404_NOT_FOUND)
+    
+    # Si l'étudiant existe faire une suppression logique
+    student.soft_delete()
+    
+    return Response({'message': 'Étudiant supprimé avec succès'}, status=status.HTTP_200_OK)
