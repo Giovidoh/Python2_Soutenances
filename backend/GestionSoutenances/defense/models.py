@@ -17,7 +17,7 @@ class Defense(models.Model):
 class DefenseProfessor(models.Model):
     defense = models.ForeignKey(Defense, on_delete = models.CASCADE)
     professor = models.ForeignKey('professors.Professors', on_delete = models.CASCADE)
-    mark = models.IntegerField(default=None)
+    mark = models.IntegerField(default = None, null = True)
     
     def __str__(self):
         return f"{self.defense} - {self.professor}"
