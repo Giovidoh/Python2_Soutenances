@@ -1,0 +1,30 @@
+Defense (Soutenance)
+
+
+
+Field of study (Filière)
+
+
+
+Professors (Professeur)
+
+
+
+Rooms (Salle)
+{
+	"name": "Salle 1"
+}
+
+
+School year (Année d’étude)
+{
+	"name": "Licence 1"
+}
+
+Specialisations (Spécialisation)
+
+
+
+Student (Étudiant)
+
+
