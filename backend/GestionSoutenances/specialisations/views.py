@@ -62,4 +62,17 @@ def update(request, id):
             return Response({'error': 'Cette spécialisation existe déjà ! Veuillez saisir un autre nom.'})
 
 
+# Suppression d'une spécialisation
+@api_view(['DELETE'])
+def delete(request, id):
+    specialisations = Specialisations.objects.filter(id=id).first()
+    if (not specialisations or specialisations.is_deleted == True):
+        return Response({'error': 'Désolé, cette spécialité n\'existe pas.'}, status=status.HTTP_404_NOT_FOUND)
+    
+    # Si la spécialisation existe faire une suppression logique
+    specialisations.soft_delete()
+    
+    return Response({'message': 'Spécialité supprimée avec succès'}, status=status.HTTP_200_OK)
+
+
 #### END CRUD ####
