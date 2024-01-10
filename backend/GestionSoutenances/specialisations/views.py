@@ -36,8 +36,8 @@ def add(request):
     serializer = SpecialisationsSerializer(data=request.data)
     if(serializer.is_valid(raise_exception=True)):
         # Vérifier si la spécialisation existe déjà
-        existing_field = Specialisations.objects.filter(name=request.data.get('name'), is_deleted=False).first()
-        if (not existing_field or existing_field.is_deleted == True):
+        existing_soutenance = Specialisations.objects.filter(name=request.data.get('name'), is_deleted=False).first()
+        if (not existing_soutenance or existing_soutenance.is_deleted == True):
             serializer.save()
             return Response({'message': 'Spécialisation ajoutée avec succès !', 'Spécialisations': serializer.data}, status=status.HTTP_201_CREATED)
         else:
@@ -54,8 +54,8 @@ def update(request, id):
     serializer = SpecialisationsSerializer(specialisations, data=request.data)
     if(serializer.is_valid(raise_exception=True)):
         # Vérifier si la spécialisation existe déjà
-        existing_field = Specialisations.objects.filter(name=request.data.get('name'), field=request.data.get('field')).exclude(id=specialisations.id).first()
-        if not existing_field:
+        existing_soutenance = Specialisations.objects.filter(name=request.data.get('name'), field=request.data.get('field')).exclude(id=specialisations.id).first()
+        if not existing_soutenance:
             serializer.save()
             return Response({'message': 'Spécialisation modifié avec succès !', 'professors': serializer.data}, status=status.HTTP_200_OK)
         else:

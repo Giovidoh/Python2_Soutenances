@@ -35,8 +35,8 @@ def add(request):
     serializer = RoomsSerializer(data=request.data)
     if(serializer.is_valid(raise_exception=True)):
         # Vérifier si la salle existe déjà
-        existing_field = Rooms.objects.filter(name=request.data.get('name'), is_deleted=False).first()
-        if (not existing_field or existing_field.is_deleted == True):
+        existing_room = Rooms.objects.filter(name=request.data.get('name'), is_deleted=False).first()
+        if (not existing_room or existing_room.is_deleted == True):
             serializer.save()
             return Response({'message': 'Salle ajoutée avec succès !', 'rooms': serializer.data}, status=status.HTTP_201_CREATED)
         else:
@@ -52,8 +52,8 @@ def update(request, id):
     serializer = RoomsSerializer(rooms, data=request.data)
     if(serializer.is_valid(raise_exception=True)):
         # Vérifier si la salle existe déjà
-        existing_field = Rooms.objects.filter(name=request.data.get('name')).exclude(id=rooms.id).first()
-        if not existing_field:
+        existing_room = Rooms.objects.filter(name=request.data.get('name')).exclude(id=rooms.id).first()
+        if not existing_room:
             serializer.save()
             return Response({'message': 'Salle modifiée avec succès !', 'rooms': serializer.data}, status=status.HTTP_200_OK)
         else:

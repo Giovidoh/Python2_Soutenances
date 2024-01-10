@@ -35,8 +35,8 @@ def add(request):
     serializer = ProfessorsSerializer(data=request.data)
     if(serializer.is_valid(raise_exception=True)):
         # Vérifier si le professeur existe déjà
-        existing_field = Professors.objects.filter(name=request.data.get('name'), is_deleted=False).first()
-        if (not existing_field or existing_field.is_deleted == True):
+        existing_professor = Professors.objects.filter(name=request.data.get('name'), is_deleted=False).first()
+        if (not existing_professor or existing_professor.is_deleted == True):
             serializer.save()
             return Response({'message': 'Professeur ajouté avec succès !', 'Professors': serializer.data}, status=status.HTTP_201_CREATED)
         else:
@@ -52,8 +52,8 @@ def update(request, id):
     serializer = ProfessorsSerializer(professors, data=request.data)
     if(serializer.is_valid(raise_exception=True)):
         # Vérifier si le professeur existe déjà
-        existing_field = Professors.objects.filter(name=request.data.get('name'), firstName=request.data.get('firstName'), email=request.data.get('email')).exclude(id=professors.id).first()
-        if not existing_field:
+        existing_professor = Professors.objects.filter(name=request.data.get('name'), firstName=request.data.get('firstName'), email=request.data.get('email')).exclude(id=professors.id).first()
+        if not existing_professor:
             serializer.save()
             return Response({'message': 'Professeur modifié avec succès !', 'professors': serializer.data}, status=status.HTTP_200_OK)
         else:
