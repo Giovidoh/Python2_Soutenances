@@ -16,14 +16,14 @@ Field of study (Filière)
 " name":"TIG" 
 
 Professors (Professeur)
-
+{
 "name":"FATONDJI",
 "firstName":"robert",
 "contact":"01020304",
 "email":"robert@gmail.com",
 "address":"lome",
 "experience":""
-
+}
 Rooms (Salle)
 {
 	"name": "Salle 1"
@@ -36,13 +36,13 @@ School year (Année d’étude)
 }
 
 Specialisations (Spécialisation)
-
+{
 "name":"ingenieur",
 "field":"TIG",
 "professors":"AKAKPO"
-
+}
 Student (Étudiant)
-
+{
 "serialNumber":"12345678"
 "familyName":"cyprien",
 "firstName":"cyrille",
@@ -50,5 +50,5 @@ Student (Étudiant)
 "birth_date":"2002-05-28",
 "field_of_study":"TIG",
 "school_year":"Licence 3"
-
+}
 
