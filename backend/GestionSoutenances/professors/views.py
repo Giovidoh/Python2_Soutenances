@@ -75,6 +75,31 @@ def delete(request, id):
 
 #### OTHER VIEWS ####
 
+#Recherche d'un professeur via son nom et son prénom
+@api_view(['GET'])
+def search(request, name, firstName):
+    queryset = Professors.objects.filter(name=name, firstName=firstName, is_deleted = False)
+    result = []
+    
+    if queryset:
+        for object in queryset:
+            serialized_data = ProfessorsSerializer(object).data
+            result.append(serialized_data)
+    
+    return Response(result)
 
+
+#Affichage de tous les professeurs supprimés
+@api_view(['GET'])
+def deletedProfList(request):
+    queryset = Professors.objects.filter(is_deleted = True)
+    result = []
+    
+    if queryset:
+        for object in queryset:
+            serialized_data = ProfessorsSerializer(object).data
+            result.append(serialized_data)
+    
+    return Response(result)
 
 #### END OF OTHER VIEWS ####
