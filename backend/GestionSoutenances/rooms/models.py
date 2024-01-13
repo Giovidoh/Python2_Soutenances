@@ -5,6 +5,7 @@ from datetime import datetime
 
 class Rooms(models.Model):
     name = models.CharField(max_length=255)
+    nbrePlace = models.IntegerField(default = 0)
     is_deleted = models.BooleanField(default = False)
     date_deleting = models.DateField(null=True, blank=True, default=None)
     
