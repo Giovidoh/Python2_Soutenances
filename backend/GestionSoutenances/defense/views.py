@@ -1,4 +1,5 @@
 # Importation du modèle
+from datetime import datetime, timedelta
 from .models import Defense
 
 # Importations de rest_framework
@@ -32,8 +33,32 @@ def add(request):
         # Vérifier si la soutenance existe déjà
         existing_defense = Defense.objects.filter(theme=request.data.get('theme'), date_time=request.data.get('date_time'), room=request.data.get('room'), student=request.data.get('student'), is_deleted=False).first()
         if (not existing_defense or existing_defense.is_deleted == True):
-            serializer.save()
-            return Response({'message': 'Soutenance ajoutée avec succès !', 'defense': serializer.data}, status=status.HTTP_201_CREATED)
+            ## Vérifier si la salle est disponible pour l'intervalle de temps choisi
+            # Récupérer les soutenances du jour choisi
+            defenses_of_the_day = Defense.objects.filter(date_time = request.data.get('date_time'))
+            busy = False
+            for defense in defenses_of_the_day:
+                start_hour_db = datetime.hour(defense.date_time)
+                duration_db = defense.duration
+                end_hour_db = start_hour_db + timedelta(hours = duration_db)
+                
+                duration = 2
+                if(request.data.get('duration')):
+                    duration = request.data.get('duration')
+                start_hour = datetime.hour(request.data.get('date_time'))
+                end_hour = start_hour + timedelta(hours = duration)
+                
+                if(
+                    (start_hour >= start_hour_db and start_hour <= end_hour_db)
+                    or (end_hour >= start_hour_db and end_hour <= end_hour_db)
+                    or (start_hour_db >= start_hour and start_hour_db <= end_hour)
+                    or (end_hour_db >= start_hour and end_hour_db <= end_hour)
+                ):
+                    busy = True
+            
+            if(not busy):
+                serializer.save()
+                return Response({'message': 'Soutenance ajoutée avec succès !', 'defense': serializer.data}, status=status.HTTP_201_CREATED)
         else:
             return Response({'error': 'Cette soutenance existe déjà ! Veuillez en créer une autre.'})
     
