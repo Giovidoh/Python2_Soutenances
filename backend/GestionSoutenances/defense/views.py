@@ -1,6 +1,7 @@
 # Importation du modèle
 from datetime import datetime, timedelta
 from .models import Defense
+from rooms.models import Rooms
 
 # Importations de rest_framework
 from rest_framework.response import Response
@@ -31,22 +32,29 @@ def add(request):
     serializer = DefenseSerializer(data=request.data)
     if(serializer.is_valid(raise_exception=True)):
         # Vérifier si la soutenance existe déjà
-        existing_defense = Defense.objects.filter(theme=request.data.get('theme'), date_time=request.data.get('date_time'), room=request.data.get('room'), student=request.data.get('student'), is_deleted=False).first()
+        existing_defense = Defense.objects.filter(theme=request.data.get('theme'),
+                                                  date=request.data.get('date'),
+                                                  time=request.data.get('time'),
+                                                  room=request.data.get('room'),
+                                                  student=request.data.get('student'),
+                                                  is_deleted=False).first()
         if (not existing_defense or existing_defense.is_deleted == True):
             ## Vérifier si la salle est disponible pour l'intervalle de temps choisi
-            # Récupérer les soutenances du jour choisi
-            defenses_of_the_day = Defense.objects.filter(date_time = request.data.get('date_time'))
+            # Récupérer les soutenances du jour choisi et qui ne sont pas supprimées
+            defenses_of_the_day = Defense.objects.filter(date = request.data.get('date'), is_deleted = False)
             busy = False
             for defense in defenses_of_the_day:
-                start_hour_db = datetime.hour(defense.date_time)
+                start_hour_db = defense.time.strftime('%H:%M:%S')
                 duration_db = defense.duration
-                end_hour_db = start_hour_db + timedelta(hours = duration_db)
+                end_hour_db = (datetime.strptime(start_hour_db, '%H:%M:%S') + timedelta(hours = duration_db)).strftime('%H:%M:%S')
                 
+                # Utiliser la durée renseignée, sinon utiliser la durée par défaut
                 duration = 2
                 if(request.data.get('duration')):
                     duration = request.data.get('duration')
-                start_hour = datetime.hour(request.data.get('date_time'))
-                end_hour = start_hour + timedelta(hours = duration)
+                    
+                start_hour = request.data.get('time')
+                end_hour = (datetime.strptime(start_hour, '%H:%M:%S') + timedelta(hours = duration)).strftime('%H:%M:%S')
                 
                 if(
                     (start_hour >= start_hour_db and start_hour <= end_hour_db)
@@ -55,7 +63,10 @@ def add(request):
                     or (end_hour_db >= start_hour and end_hour_db <= end_hour)
                 ):
                     busy = True
-            
+                    room_id = request.data.get('room')
+                    room_name = Rooms.objects.filter(id = room_id).first().name
+                    return Response({'error': f"La salle '{room_name}' est indisponible à cette heure!", 'end_hour': end_hour_db})
+                
             if(not busy):
                 serializer.save()
                 return Response({'message': 'Soutenance ajoutée avec succès !', 'defense': serializer.data}, status=status.HTTP_201_CREATED)
@@ -71,8 +82,13 @@ def update(request, id):
     
     serializer = DefenseSerializer(defense, data=request.data)
     if(serializer.is_valid(raise_exception=True)):
-        # Vérifier si la filière existe déjà
-        existing_defense = Defense.objects.filter(theme=request.data.get('theme'), date_time=request.data.get('date_time'), room=request.data.get('room'), student=request.data.get('student'), is_deleted=False).exclude(id=defense.id).first()
+        # Vérifier si la soutenance existe déjà
+        existing_defense = Defense.objects.filter(theme=request.data.get('theme'),
+                                                  date=request.data.get('date'),
+                                                  time=request.data.get('time'),
+                                                  room=request.data.get('room'),
+                                                  student=request.data.get('student'),
+                                                  is_deleted=False).first()
         if not existing_defense:
             serializer.save()
             return Response({'message': 'Soutenance modifiée avec succès !', 'defense': serializer.data}, status=status.HTTP_200_OK)

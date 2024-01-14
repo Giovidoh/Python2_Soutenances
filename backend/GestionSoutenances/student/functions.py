@@ -17,5 +17,3 @@ def generate_serial_number():
     # Retourner le numéro matricule
     serial_number = f"{first_part_of_serial_number}-{current_year}"
     return serial_number
-
-generate_serial_number()
