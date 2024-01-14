@@ -42,34 +42,52 @@ def add(request):
             ## Vérifier si la salle est disponible pour l'intervalle de temps choisi
             # Récupérer les soutenances du jour choisi et qui ne sont pas supprimées
             defenses_of_the_day = Defense.objects.filter(date = request.data.get('date'), is_deleted = False)
+            
+            # Initialiser la variable d'occupation et les tableaux des heures d'indisponibilité
             busy = False
-            for defense in defenses_of_the_day:
-                start_hour_db = defense.time.strftime('%H:%M:%S')
-                duration_db = defense.duration
-                end_hour_db = (datetime.strptime(start_hour_db, '%H:%M:%S') + timedelta(hours = duration_db)).strftime('%H:%M:%S')
+            busy_starts_hours = []
+            busy_ends_hours = []
+            
+            if(defenses_of_the_day):
                 
+                # Récupérer l'heure de début renseignée et calculer l'heure de fin
                 # Utiliser la durée renseignée, sinon utiliser la durée par défaut
                 duration = 2
                 if(request.data.get('duration')):
                     duration = request.data.get('duration')
-                    
                 start_hour = request.data.get('time')
                 end_hour = (datetime.strptime(start_hour, '%H:%M:%S') + timedelta(hours = duration)).strftime('%H:%M:%S')
                 
-                if(
-                    (start_hour >= start_hour_db and start_hour <= end_hour_db)
-                    or (end_hour >= start_hour_db and end_hour <= end_hour_db)
-                    or (start_hour_db >= start_hour and start_hour_db <= end_hour)
-                    or (end_hour_db >= start_hour and end_hour_db <= end_hour)
-                ):
-                    busy = True
+                # Pour chaque soutenance de la base de données effectuer les opérations suivantes
+                for defense in defenses_of_the_day:
+                    # Récupérer l'heure de début et calculer l'heure de fin de la soutenance de la bdd
+                    start_hour_db = defense.time.strftime('%H:%M:%S')
+                    duration_db = defense.duration
+                    end_hour_db = (datetime.strptime(start_hour_db, '%H:%M:%S') + timedelta(hours = duration_db)).strftime('%H:%M:%S')
+                    
+                    # Récupérer les heure de début et de fin dans les tableaux
+                    busy_starts_hours.append(start_hour_db)
+                    busy_ends_hours.append(end_hour_db)
+                    
+                    if(
+                        (start_hour >= start_hour_db and start_hour <= end_hour_db)
+                        or (end_hour >= start_hour_db and end_hour <= end_hour_db)
+                        or (start_hour_db >= start_hour and start_hour_db <= end_hour)
+                        or (end_hour_db >= start_hour and end_hour_db <= end_hour)
+                    ):
+                        busy = True
+                    
+                if(not busy):
+                    serializer.save()
+                    return Response({'message': 'Soutenance ajoutée avec succès !', 'defense': serializer.data}, status=status.HTTP_201_CREATED)
+                else:
                     room_id = request.data.get('room')
                     room_name = Rooms.objects.filter(id = room_id).first().name
-                    return Response({'error': f"La salle '{room_name}' est indisponible à cette heure!", 'end_hour': end_hour_db})
-                
-            if(not busy):
-                serializer.save()
-                return Response({'message': 'Soutenance ajoutée avec succès !', 'defense': serializer.data}, status=status.HTTP_201_CREATED)
+                    return Response({
+                                'error': f"La salle '{room_name}' est indisponible à cette heure!",
+                                'busy_starts_hours': busy_starts_hours,
+                                'busy_ends_hours': busy_ends_hours,
+                            })
         else:
             return Response({'error': 'Cette soutenance existe déjà ! Veuillez en créer une autre.'})
     
