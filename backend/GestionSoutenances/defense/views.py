@@ -117,6 +117,12 @@ def add(request):
                                 'busy_starts_hours': busy_starts_hours,
                                 'busy_ends_hours': busy_ends_hours,
                             })
+                    
+            # Si aucune soutenance n'est programmée dans la journée, enregistrer la nouvelle.
+            else: 
+                serializer.save()
+                return Response({'message': 'Soutenance ajoutée avec succès !', 'defense': serializer.data}, status=status.HTTP_201_CREATED)
+            
         else:
             return Response({'error': 'Cette soutenance existe déjà ! Veuillez en créer une autre.'})
     
@@ -129,17 +135,18 @@ def update(request, id):
     
     serializer = DefenseSerializer(defense, data=request.data)
     if(serializer.is_valid(raise_exception=True)):
-        # Vérifier si la soutenance existe déjà
+        # Vérifier si la soutenance existe déjà SAUF CELLE A MODIFIER
         existing_defense = Defense.objects.filter(theme=request.data.get('theme'),
                                                   date=request.data.get('date'),
                                                   time=request.data.get('time'),
                                                   room=request.data.get('room'),
                                                   student=request.data.get('student'),
-                                                  is_deleted=False).first()
+                                                  is_deleted=False).exclude(id = id).first()
         if not existing_defense:
             ## Vérifier si la salle est disponible pour l'intervalle de temps choisi
             # Récupérer les soutenances du jour choisi et qui ne sont pas supprimées
-            defenses_of_the_day = Defense.objects.filter(date = request.data.get('date'), is_deleted = False)
+            # SAUF CELLE A MODIFIER
+            defenses_of_the_day = Defense.objects.filter(date = request.data.get('date'), is_deleted = False).exclude(id = id)
             
             # Initialiser la variable d'occupation et les tableaux des heures d'indisponibilité
             busy = False
@@ -177,7 +184,7 @@ def update(request, id):
                     
                 if(not busy):
                     serializer.save()
-                    return Response({'message': 'Soutenance ajoutée avec succès !', 'defense': serializer.data}, status=status.HTTP_201_CREATED)
+                    return Response({'message': 'Soutenance modifiée avec succès !', 'defense': serializer.data}, status=status.HTTP_200_OK)
                 else:
                     room_id = request.data.get('room')
                     room_name = Rooms.objects.filter(id = room_id).first().name
@@ -186,6 +193,12 @@ def update(request, id):
                                 'busy_starts_hours': busy_starts_hours,
                                 'busy_ends_hours': busy_ends_hours,
                             })
+                    
+            # Si aucune soutenance n'est enregistrée dans la journée, effectuer les modifications
+            else:
+                serializer.save()
+                return Response({'message': 'Soutenance modifiée avec succès !', 'defense': serializer.data}, status=status.HTTP_200_OK)
+            
         else:
             return Response({'error': 'Cette Soutenance existe déjà ! Veuillez en créer une autre.'})
         
