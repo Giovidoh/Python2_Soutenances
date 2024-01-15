@@ -1,7 +1,10 @@
 # Importation du modèle
 from datetime import datetime, timedelta
+
 from .models import Defense
 from rooms.models import Rooms
+from student.models import Student
+from professors.models import Professors
 
 # Importations de rest_framework
 from rest_framework.response import Response
@@ -22,9 +25,35 @@ def list(request):
     if queryset:
         for object in queryset:
             serialized_data = DefenseSerializer(object).data
+            
+            # Nom de la salle
+            room_name = Rooms.objects.filter(id = serialized_data['room']).first().name
+            serialized_data['room_name'] = room_name
+            
+            # Nom & prénom de l'étudiant
+            student = Student.objects.filter(id = serialized_data['student']).first()
+            student_family_name = student.familyName
+            student_first_name = student.firstName
+            serialized_data['student_name'] = student_family_name.upper() + ' ' + student_first_name
+            
+            # Noms et prénoms des professeurs
+            if(serialized_data['professors']):
+                professors = serialized_data['professors']
+                professors_names = []
+                for professor in professors:
+                    professor = Professors.objects.filter(id = professor).first()
+                    professor_name = professor.name
+                    professor_first_name = professor.firstName
+                    
+                    professors_names = professor_name.upper() + ' ' + professor_first_name
+                
+                serialized_data['professors_names'] = professors_names
+                
+            
             result.append(serialized_data)
     
     return Response(result)
+
 
 # Ajout de soutenance
 @api_view(['POST'])
