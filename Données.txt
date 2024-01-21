@@ -1,29 +1,32 @@
 Defense (Soutenance)
-
 {
 	"theme": "Gestion de projets",
-	"date_time": "2024-01-29",
-    "result":"",
-	"room":"Salle 1",
-	"student":"cyprien valentin",
-	"professors":"GODEVI cyrille"
-
+	"date": "2024-02-01",
+	"time": "08:00:00",
+	"duration": 3,
+    "result": null,
+	"room": 1,
+	"student": 1,
+	"professors": [1]
 }
 
 
 Field of study (Filière)
 {
-	" name":"TIG" 
+	"name": "TIG" 
 }
+
+
 Professors (Professeur)
 {
-	"name":"FATONDJI",
-	"firstName":"robert",
-	"contact":"01020304",
-	"email":"robert@gmail.com",
-	"address":"lome",
-	"experience":""
+	"name": "FATONDJI",
+	"firstName": "robert",
+	"contact": "01020304",
+	"email": "robert@gmail.com",
+	"address": "lome"
 }
+
+
 Rooms (Salle)
 {
 	"name": "Salle 1"
@@ -35,12 +38,15 @@ School year (Année d’étude)
 	"name": "Licence 3"
 }
 
+
 Specialisations (Spécialisation)
 {
 	"name":"ingenieur",
 	"field":"TIG",
 	"professors":"AKAKPO"
 }
+
+
 Student (Étudiant)
 {
 	"serialNumber":"12345678"
