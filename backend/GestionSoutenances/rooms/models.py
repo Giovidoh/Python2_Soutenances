@@ -17,5 +17,5 @@ class Rooms(models.Model):
         self.date_deleting = datetime.now()
         self.save()
         
-    def search(cls, query):
+    def filter(cls, query):
         return cls.objects.filter(name__icontains=query, is_deleted=False)

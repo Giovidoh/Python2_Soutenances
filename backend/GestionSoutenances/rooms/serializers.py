@@ -7,7 +7,7 @@ class RoomsFilter(django_filters.FilterSet):
     class Meta:
         model = Rooms
         fields = ['name']
-
+                
 class RoomsSerializer(serializers.ModelSerializer):
     class Meta:
         model = Rooms

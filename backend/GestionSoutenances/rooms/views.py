@@ -4,14 +4,12 @@ from .models import Rooms
 from django.http import JsonResponse
 
 # Importation de django_filters
-from django_filters import rest_framework as filters
 from django_filters.rest_framework import DjangoFilterBackend
 
 # Importations de rest_framework
 from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.decorators import api_view
-
 from rest_framework import generics
 
 # Importation du serializer
@@ -80,6 +78,9 @@ def delete(request, id):
 
 #### OTHER VIEWS ####
 
+
+#Filtre
+
 class RoomsList(generics.ListAPIView):
     queryset = Rooms.objects.filter(is_deleted=False)
     serializer_class = RoomsSerializer
@@ -91,10 +92,24 @@ class RoomsList(generics.ListAPIView):
 def filter(request):
     query = request.GET.get('query', '')
     if query:
-        queryset = Rooms.search(query)
+        queryset = Rooms.filter(query)
         result = [RoomsSerializer(room).data for room in queryset]
         return Response(result)
 
 
+#Recherche
+class RoomsListSearch(generics.ListAPIView):
+    queryset = Rooms.objects.filter(is_deleted=False)
+    serializer_class = RoomsSerializer
+    search_fields = ['name']
+
+
+@api_view(['GET'])
+def search(request):
+    query = Rooms.objects.filter(is_deleted = False)
+    if query:
+        queryset = Rooms.filter(query)
+        result = [RoomsSerializer(room).data for room in queryset]
+        return Response(result)
 
 #### END OF OTHER VIEWS ####
