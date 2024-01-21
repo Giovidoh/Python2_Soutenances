@@ -88,7 +88,7 @@ class RoomsList(generics.ListAPIView):
 
 
 @api_view(['GET'])
-def search(request):
+def filter(request):
     query = request.GET.get('query', '')
     if query:
         queryset = Rooms.search(query)

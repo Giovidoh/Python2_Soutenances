@@ -6,7 +6,7 @@ class RoomsFilter(django_filters.FilterSet):
 
     class Meta:
         model = Rooms
-        fields = ['search']
+        fields = ['filter']
 
     def filter_search(self, queryset, name, value):
         return queryset.search(value)

@@ -1,5 +1,5 @@
 from django.urls import path
-from .views import list, add, update, delete, search
+from .views import list, add, update, delete, filter
 from .views import RoomsList
 
 urlpatterns = [
@@ -7,6 +7,5 @@ urlpatterns = [
     path('add/', add, name='add'),
     path('update/<int:id>/', update, name='update'),
     path('delete/<int:id>/', delete, name='delete'),
-    # path('search/', search, name='search'),
-    path('search/', RoomsList.as_view(), name='rooms-list'),
+    path('filter/', RoomsList.as_view(), name='rooms-list'),
 ]
