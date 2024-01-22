@@ -93,7 +93,7 @@ def filter(request):
     query = request.GET.get('query', '')
     if query:
         queryset = SchoolYear.filter(query)
-        result = [SchoolYearSerializer(room).data for room in queryset]
+        result = [SchoolYearSerializer(year).data for year in queryset]
         return Response(result)
 
 
@@ -109,7 +109,7 @@ def search(request):
     query = SchoolYear.objects.filter(is_deleted = False)
     if query:
         queryset = SchoolYear.filter(query)
-        result = [SchoolYearSerializer(room).data for room in queryset]
+        result = [SchoolYearSerializer(year).data for year in queryset]
         return Response(result)
 
 #### END OF OTHER VIEWS ####

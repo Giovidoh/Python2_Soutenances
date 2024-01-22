@@ -93,7 +93,7 @@ def filter(request):
     query = request.GET.get('query', '')
     if query:
         queryset = FieldOfStudy.filter(query)
-        result = [FieldOfStudySerializer(room).data for room in queryset]
+        result = [FieldOfStudySerializer(field).data for field in queryset]
         return Response(result)
 
 
@@ -109,7 +109,7 @@ def search(request):
     query = FieldOfStudy.objects.filter(is_deleted = False)
     if query:
         queryset = FieldOfStudy.filter(query)
-        result = [FieldOfStudySerializer(room).data for room in queryset]
+        result = [FieldOfStudySerializer(field).data for field in queryset]
         return Response(result)
 
 #### END OF OTHER VIEWS ####

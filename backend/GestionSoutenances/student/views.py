@@ -101,7 +101,7 @@ def filter(request):
     query = request.GET.get('query', '')
     if query:
         queryset = Student.filter(query)
-        result = [StudentSerializer(room).data for room in queryset]
+        result = [StudentSerializer(student).data for student in queryset]
         return Response(result)
 
 
@@ -117,7 +117,7 @@ def search(request):
     query = Student.objects.filter(is_deleted = False)
     if query:
         queryset = Student.filter(query)
-        result = [StudentSerializer(room).data for room in queryset]
+        result = [StudentSerializer(student).data for student in queryset]
         return Response(result)
 
 
