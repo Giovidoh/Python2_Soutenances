@@ -10,6 +10,13 @@ Defense (Soutenance)
 	"professors": [1]
 }
 
+Ajout de la note d'un professeur à une soutenance
+{
+	"defense": 2,
+	"professor": 1,
+	"mark": 12
+}
+
 
 Field of study (Filière)
 {

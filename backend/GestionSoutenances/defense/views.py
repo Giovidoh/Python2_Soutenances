@@ -12,7 +12,7 @@ from rest_framework import status
 from rest_framework.decorators import api_view
 
 # Importation du serializer
-from .serializers import DefenseSerializer
+from .serializers import DefenseSerializer, DefenseProfessorSerializer
 
 # Create your views here.
 
@@ -241,4 +241,36 @@ def delete(request, id):
     # Si la soutenance existe faire une suppression logique
     defense.soft_delete()
     
-    return Response({'message': 'Soutenance supprimée avec succès'}, status=status.HTTP_200_OK)
+    return Response({'message': 'Soutenance supprimée avec succès !'}, status=status.HTTP_200_OK)
+
+# Ajout de note d'un professeur à une soutenance
+@api_view(['PUT'])
+def addMark(request):
+    defense_id = request.data.get('defense')
+    professor_id = request.data.get('professor')
+    defenseProfessor = DefenseProfessor.objects.filter(defense_id = defense_id, professor_id = professor_id).first()
+    
+    serializer = DefenseProfessorSerializer(defenseProfessor, data=request.data)
+    if serializer.is_valid(raise_exception = True):
+        serializer.save()
+        
+        # Actualiser le résultat de la soutenance
+        defense = Defense.objects.filter(id = defense_id).first()
+        
+        resultat = 0
+        
+        defensesProfessors = DefenseProfessor.objects.filter(defense_id = defense_id, mark__isnull = False)
+        
+        if defensesProfessors:
+            nbre = defensesProfessors.count()
+            
+            for defenseProfessor in defensesProfessors:
+                resultat += defenseProfessor.mark
+            
+            defense.result = resultat/nbre
+            defense.save()
+        
+        
+        
+    
+    return Response({'message': 'Note ajoutée avec succès !', 'defenseProfessor': serializer.data}, status=status.HTTP_200_OK)
