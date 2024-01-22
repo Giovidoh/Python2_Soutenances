@@ -1,7 +1,7 @@
 Defense (Soutenance)
 {
 	"theme": "Gestion de projets",
-	"date": "2024-02-01",
+	"date": "2024-01-23",
 	"time": "08:00:00",
 	"duration": 3,
 	"result": null,
@@ -26,12 +26,12 @@ Field of study (Filière)
 
 Professors (Professeur)
 {
-	"name": "FATONDJI",
-	"firstName": "robert",
-	"contact": "01020304",
-	"email": "robert@gmail.com",
+	"name": "ATALAKOU",
+	"firstName": "Fabien",
+	"contact": "90165876",
+	"email": "atalafab@gmail.com",
 	"address": "lome",
-	"fieldOfStudy": 3
+	"fieldOfStudy": [3]
 }
 
 
@@ -47,22 +47,13 @@ School year (Année d’étude)
 }
 
 
-Specialisations (Spécialisation)
-{
-	"name":"ingenieur",
-	"field":"TIG",
-	"professors":"AKAKPO"
-}
-
-
 Student (Étudiant)
 {
-	"serialNumber":"12345678"
-	"familyName":"cyprien",
-	"firstName":"cyrille",
-	"gender":"M",
-	"birth_date":"2002-05-28",
-	"field_of_study":"TIG",
-	"school_year":"Licence 3"
+	"familyName": "cyprien",
+	"firstName": "cyrille",
+	"gender": "M",
+	"birth_date": "2002-05-28",
+	"field_of_study": 1,
+	"school_year": [1]
 }
 
