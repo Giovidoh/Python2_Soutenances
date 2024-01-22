@@ -35,3 +35,6 @@ class DefenseProfessor(models.Model):
     
     def __str__(self):
         return f"{self.defense} - {self.professor}"
+    
+def filter(cls, query):
+    return cls.objects.filter(name__icontains=query, is_deleted=False)

@@ -6,13 +6,18 @@ from rooms.models import Rooms
 from student.models import Student
 from professors.models import Professors
 
+# Importation de django_filters
+from django_filters.rest_framework import DjangoFilterBackend
+
 # Importations de rest_framework
 from rest_framework.response import Response
 from rest_framework import status
 from rest_framework.decorators import api_view
+from rest_framework import generics
+
 
 # Importation du serializer
-from .serializers import DefenseSerializer, DefenseProfessorSerializer
+from .serializers import DefenseSerializer, DefenseProfessorSerializer, DefensesFilter
 
 # Create your views here.
 
@@ -278,3 +283,41 @@ def addMark(request):
         
     
     return Response({'message': 'Note ajoutée avec succès !', 'defenseProfessor': serializer.data}, status=status.HTTP_200_OK)
+
+#### OTHER VIEWS ####
+
+#Filtre
+
+class DefensesListFilter(generics.ListAPIView):
+    queryset = Defense.objects.filter(is_deleted=False)
+    serializer_class = DefenseSerializer
+    filter_backends = [DjangoFilterBackend]
+    filterset_class = DefensesFilter
+
+
+@api_view(['GET'])
+def filter(request):
+    query = request.GET.get('query', '')
+    if query:
+        queryset = Student.filter(query)
+        result = [DefenseSerializer(defense).data for defense in queryset]
+        return Response(result)
+
+
+#Recherche
+class DefensesListSearch(generics.ListAPIView):
+    queryset = Defense.objects.filter(is_deleted=False)
+    serializer_class = DefenseSerializer
+    search_fields = ['theme', 'date', 'result', 'duration']
+
+
+@api_view(['GET'])
+def search(request):    
+    query = Student.objects.filter(is_deleted = False)
+    if query:
+        queryset = Student.filter(query)
+        result = [DefenseSerializer(defense).data for defense in queryset]
+        return Response(result)
+
+
+#### END OF OTHER VIEWS ####
