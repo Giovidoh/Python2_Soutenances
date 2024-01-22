@@ -81,7 +81,7 @@ def delete(request, id):
 
 #Filtre
 
-class RoomsList(generics.ListAPIView):
+class RoomsListFilter(generics.ListAPIView):
     queryset = Rooms.objects.filter(is_deleted=False)
     serializer_class = RoomsSerializer
     filter_backends = [DjangoFilterBackend]

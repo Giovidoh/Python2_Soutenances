@@ -3,13 +3,19 @@ from .models import FieldOfStudy
 
 from django.http import JsonResponse
 
+# Importation de django_filters
+from django_filters.rest_framework import DjangoFilterBackend
+
+
 # Importations de rest_framework
 from rest_framework.response import Response
 from rest_framework import status
 from rest_framework.decorators import api_view
+from rest_framework import generics
+
 
 # Importation du serializer
-from .serializers import FieldOfStudySerializer
+from .serializers import FieldOfStudySerializer, FieldsFilter
 
 
 # Create your views here.
@@ -68,3 +74,42 @@ def delete(request, id):
     field_of_study.soft_delete()
     
     return Response({'message': 'Filière supprimée avec succès'}, status=status.HTTP_200_OK)
+
+
+#### OTHER VIEWS ####
+
+
+#Filtre
+
+class FieldsListFilter(generics.ListAPIView):
+    queryset = FieldOfStudy.objects.filter(is_deleted=False)
+    serializer_class = FieldOfStudySerializer
+    filter_backends = [DjangoFilterBackend]
+    filterset_class = FieldsFilter
+
+
+@api_view(['GET'])
+def filter(request):
+    query = request.GET.get('query', '')
+    if query:
+        queryset = FieldOfStudy.filter(query)
+        result = [FieldOfStudySerializer(room).data for room in queryset]
+        return Response(result)
+
+
+#Recherche
+class FieldsListSearch(generics.ListAPIView):
+    queryset = FieldOfStudy.objects.filter(is_deleted=False)
+    serializer_class = FieldOfStudySerializer
+    search_fields = ['name']
+
+
+@api_view(['GET'])
+def search(request):
+    query = FieldOfStudy.objects.filter(is_deleted = False)
+    if query:
+        queryset = FieldOfStudy.filter(query)
+        result = [FieldOfStudySerializer(room).data for room in queryset]
+        return Response(result)
+
+#### END OF OTHER VIEWS ####
