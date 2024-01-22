@@ -275,6 +275,10 @@ def addMark(request):
             defense.save()
         
         
-        
+    # Augmenter l'expérience du professeur
+    expProfessor = DefenseProfessor.objects.filter(professor_id = professor_id, mark__isnull = False).count()
+    professor = Professors.objects.filter(id = professor_id).first()
+    professor.experience = expProfessor
+    professor.save()
     
     return Response({'message': 'Note ajoutée avec succès !', 'defenseProfessor': serializer.data}, status=status.HTTP_200_OK)
