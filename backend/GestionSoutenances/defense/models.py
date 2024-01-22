@@ -1,5 +1,6 @@
 from django.db import models
 from datetime import datetime
+from django.core.validators import MaxValueValidator, MinValueValidator
 
 # Create your models here.
 
@@ -27,7 +28,10 @@ class Defense(models.Model):
 class DefenseProfessor(models.Model):
     defense = models.ForeignKey(Defense, on_delete = models.CASCADE)
     professor = models.ForeignKey('professors.Professors', on_delete = models.CASCADE)
-    mark = models.IntegerField(default = None, null = True)
+    mark = models.IntegerField(default = None, null = True, validators=[MinValueValidator(0), MaxValueValidator(20)])
+    
+    class Meta:
+        unique_together = ('defense', 'professor')
     
     def __str__(self):
         return f"{self.defense} - {self.professor}"
