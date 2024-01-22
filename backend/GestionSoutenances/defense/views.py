@@ -1,7 +1,7 @@
 # Importation du modèle
 from datetime import datetime, timedelta
 
-from .models import Defense
+from .models import Defense, DefenseProfessor
 from rooms.models import Rooms
 from student.models import Student
 from professors.models import Professors
@@ -107,7 +107,15 @@ def add(request):
                         busy = True
                     
                 if(not busy):
-                    serializer.save()
+                    addDefense = serializer.save()
+                    # Lier les professeurs s'il y en a à la soutenance
+                    professors = request.data.get('professors')
+                    for professor in professors:
+                        DefenseProfessor.objects.create(
+                            defense_id=addDefense.id,
+                            professor_id=professor
+                        )
+                        
                     return Response({'message': 'Soutenance ajoutée avec succès !', 'defense': serializer.data}, status=status.HTTP_201_CREATED)
                 else:
                     room_id = request.data.get('room')
@@ -119,8 +127,15 @@ def add(request):
                             })
                     
             # Si aucune soutenance n'est programmée dans la journée, enregistrer la nouvelle.
-            else: 
-                serializer.save()
+            else:
+                addDefense = serializer.save()
+                # Lier les professeurs s'il y en a à la soutenance
+                professors = request.data.get('professors')
+                for professor in professors:
+                    DefenseProfessor.objects.create(
+                        defense_id=addDefense.id,
+                        professor_id=professor
+                    )
                 return Response({'message': 'Soutenance ajoutée avec succès !', 'defense': serializer.data}, status=status.HTTP_201_CREATED)
             
         else:
@@ -183,7 +198,14 @@ def update(request, id):
                         busy = True
                     
                 if(not busy):
-                    serializer.save()
+                    addDefense = serializer.save()
+                    # Lier les professeurs s'il y en a à la soutenance
+                    professors = request.data.get('professors')
+                    for professor in professors:
+                        DefenseProfessor.objects.create(
+                            defense_id=addDefense.id,
+                            professor_id=professor
+                        )
                     return Response({'message': 'Soutenance modifiée avec succès !', 'defense': serializer.data}, status=status.HTTP_200_OK)
                 else:
                     room_id = request.data.get('room')
@@ -196,7 +218,14 @@ def update(request, id):
                     
             # Si aucune soutenance n'est enregistrée dans la journée, effectuer les modifications
             else:
-                serializer.save()
+                addDefense = serializer.save()
+                # Lier les professeurs s'il y en a à la soutenance
+                professors = request.data.get('professors')
+                for professor in professors:
+                    DefenseProfessor.objects.create(
+                        defense_id=addDefense.id,
+                        professor_id=professor
+                    )
                 return Response({'message': 'Soutenance modifiée avec succès !', 'defense': serializer.data}, status=status.HTTP_200_OK)
             
         else:
