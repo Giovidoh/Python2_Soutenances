@@ -12,7 +12,7 @@ class Professors(models.Model):
     experience = models.IntegerField(default = 0) #Nombre de soutenances assitées par le professeur
     is_deleted = models.BooleanField(default = False)
     date_deleting = models.DateField(null=True, blank=True, default=None)
-    specialisations = models.ManyToManyField("specialisations.Specialisations")
+    fieldOfStudy = models.ManyToManyField("field_of_study.FieldOfStudy")
 
     
     def __str__(self):
