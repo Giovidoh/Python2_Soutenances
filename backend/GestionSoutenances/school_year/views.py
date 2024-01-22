@@ -3,13 +3,19 @@ from .models import SchoolYear
 
 from django.http import JsonResponse
 
+# Importation de django_filters
+from django_filters.rest_framework import DjangoFilterBackend
+
+
 # Importations de rest_framework
 from rest_framework.response import Response
 from rest_framework import status
 from rest_framework.decorators import api_view
+from rest_framework import generics
+
 
 # Importation du serializer
-from .serializers import SchoolYearSerializer
+from .serializers import SchoolYearSerializer, YearsFilter
 
 
 # Create your views here.
@@ -68,3 +74,42 @@ def delete(request, id):
     school_year.soft_delete()
     
     return Response({'message': 'Année supprimée avec succès'}, status=status.HTTP_200_OK)
+
+
+#### OTHER VIEWS ####
+
+
+#Filtre
+
+class YearListFilter(generics.ListAPIView):
+    queryset = SchoolYear.objects.filter(is_deleted=False)
+    serializer_class = SchoolYearSerializer
+    filter_backends = [DjangoFilterBackend]
+    filterset_class = YearsFilter
+
+
+@api_view(['GET'])
+def filter(request):
+    query = request.GET.get('query', '')
+    if query:
+        queryset = SchoolYear.filter(query)
+        result = [SchoolYearSerializer(room).data for room in queryset]
+        return Response(result)
+
+
+#Recherche
+class YearListSearch(generics.ListAPIView):
+    queryset = SchoolYear.objects.filter(is_deleted=False)
+    serializer_class = SchoolYearSerializer
+    search_fields = ['name']
+
+
+@api_view(['GET'])
+def search(request):
+    query = SchoolYear.objects.filter(is_deleted = False)
+    if query:
+        queryset = SchoolYear.filter(query)
+        result = [SchoolYearSerializer(room).data for room in queryset]
+        return Response(result)
+
+#### END OF OTHER VIEWS ####
