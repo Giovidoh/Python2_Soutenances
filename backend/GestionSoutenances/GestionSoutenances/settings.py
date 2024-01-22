@@ -44,7 +44,6 @@ INSTALLED_APPS = [
     'rooms',
     'rest_framework',
     'school_year',
-    'specialisations',
     'student',
 ]
 

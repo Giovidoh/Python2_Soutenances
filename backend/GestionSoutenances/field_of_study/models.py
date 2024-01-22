@@ -15,3 +15,6 @@ class FieldOfStudy(models.Model):
         self.is_deleted = True
         self.date_deleting = datetime.now()
         self.save()
+        
+    def filter(cls, query):
+        return cls.objects.filter(name__icontains=query, is_deleted=False)
