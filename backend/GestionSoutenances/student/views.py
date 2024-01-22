@@ -3,13 +3,17 @@ from .models import Student
 
 from django.http import JsonResponse
 
+# Importation de django_filters
+from django_filters.rest_framework import DjangoFilterBackend
+
 # Importations de rest_framework
 from rest_framework.response import Response
 from rest_framework import status
 from rest_framework.decorators import api_view
+from rest_framework import generics
 
 # Importation du serializer
-from .serializers import StudentSerializer
+from .serializers import StudentSerializer, StudentsFilter
 
 # Importation des fonctions personnalisées
 from .functions import generate_serial_number
@@ -83,6 +87,38 @@ def delete(request, id):
 
 #### OTHER VIEWS ####
 
+#Filtre
+
+class StudentsListFilter(generics.ListAPIView):
+    queryset = Student.objects.filter(is_deleted=False)
+    serializer_class = StudentSerializer
+    filter_backends = [DjangoFilterBackend]
+    filterset_class = StudentsFilter
+
+
+@api_view(['GET'])
+def filter(request):
+    query = request.GET.get('query', '')
+    if query:
+        queryset = Student.filter(query)
+        result = [StudentSerializer(room).data for room in queryset]
+        return Response(result)
+
+
+#Recherche
+class StudentsListSearch(generics.ListAPIView):
+    queryset = Student.objects.filter(is_deleted=False)
+    serializer_class = StudentSerializer
+    search_fields = ['serialNumber', 'familyName', 'firstName', 'birth_date']
+
+
+@api_view(['GET'])
+def search(request):
+    query = Student.objects.filter(is_deleted = False)
+    if query:
+        queryset = Student.filter(query)
+        result = [StudentSerializer(room).data for room in queryset]
+        return Response(result)
 
 
 #### END OF OTHER VIEWS ####
