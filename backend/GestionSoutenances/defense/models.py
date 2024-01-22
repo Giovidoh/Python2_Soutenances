@@ -30,5 +30,8 @@ class DefenseProfessor(models.Model):
     professor = models.ForeignKey('professors.Professors', on_delete = models.CASCADE)
     mark = models.IntegerField(default = None, null = True, validators=[MinValueValidator(0), MaxValueValidator(20)])
     
+    class Meta:
+        unique_together = ('defense', 'professor')
+    
     def __str__(self):
         return f"{self.defense} - {self.professor}"

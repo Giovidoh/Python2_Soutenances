@@ -4,7 +4,7 @@ Defense (Soutenance)
 	"date": "2024-02-01",
 	"time": "08:00:00",
 	"duration": 3,
-    "result": null,
+	"result": null,
 	"room": 1,
 	"student": 1,
 	"professors": [1]
@@ -12,9 +12,9 @@ Defense (Soutenance)
 
 Ajout de la note d'un professeur à une soutenance
 {
-	"defense": 2,
+	"defense": 1,
 	"professor": 1,
-	"mark": 12
+	"mark": 15
 }
 
 
@@ -30,7 +30,8 @@ Professors (Professeur)
 	"firstName": "robert",
 	"contact": "01020304",
 	"email": "robert@gmail.com",
-	"address": "lome"
+	"address": "lome",
+	"fieldOfStudy": 3
 }
 
 

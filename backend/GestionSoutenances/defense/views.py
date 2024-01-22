@@ -202,10 +202,12 @@ def update(request, id):
                     # Lier les professeurs s'il y en a à la soutenance
                     professors = request.data.get('professors')
                     for professor in professors:
-                        DefenseProfessor.objects.create(
-                            defense_id=addDefense.id,
-                            professor_id=professor
-                        )
+                        # Faire la liaison entre le professeur et la soutenance si elle n'existe pas encore
+                        if( not DefenseProfessor.objects.filter(defense_id=addDefense.id, professor_id=professor).exists()):
+                            DefenseProfessor.objects.create(
+                                defense_id=addDefense.id,
+                                professor_id=professor
+                            )
                     return Response({'message': 'Soutenance modifiée avec succès !', 'defense': serializer.data}, status=status.HTTP_200_OK)
                 else:
                     room_id = request.data.get('room')
@@ -222,10 +224,12 @@ def update(request, id):
                 # Lier les professeurs s'il y en a à la soutenance
                 professors = request.data.get('professors')
                 for professor in professors:
-                    DefenseProfessor.objects.create(
-                        defense_id=addDefense.id,
-                        professor_id=professor
-                    )
+                    # Faire la liaison entre le professeur et la soutenance si elle n'existe pas encore
+                    if( not DefenseProfessor.objects.filter(defense_id=addDefense.id, professor_id=professor).exists()):
+                        DefenseProfessor.objects.create(
+                            defense_id=addDefense.id,
+                            professor_id=professor
+                        )
                 return Response({'message': 'Soutenance modifiée avec succès !', 'defense': serializer.data}, status=status.HTTP_200_OK)
             
         else:
